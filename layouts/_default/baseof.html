@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>{{ block "title" . }}
+      {{ .Site.Title }}
+    {{ end }}</title>
+
+    <link rel="stylesheet" type="text/css" href="/tachyons.css">
+    <link rel="stylesheet" type="text/css" href="/modal.css">
+    {{ block "style" . }}
+    {{ end }}
+  </head>
+  <body>
+    <header class="flex pt3 pb2 bb b--light-gray">
+      <a class="w-50 tc no-underline" href="/">
+        <img class="h2" src="/nittaku-logo.png">
+      </a>
+      <div class="w-50 tc">
+        <label class="pointer mt3 f6 ba br-100 dib w1 h1 silver hover-near-black i" for="modal-trigger">i</label>
+      </div>
+    </header>
+    <main class="center w-90 w-60-ns {{ .Type }}">
+      {{ block "main" . }}
+      {{ end }}
+    </main>
+
+    <div class="modal">
+      <input id="modal-trigger" class="checkbox" type="checkbox">
+      <div class="modal-overlay">
+        <label for="modal-trigger" class="o-close"></label>
+        <div class="modal-wrap">
+          <label for="modal-trigger" class="close">&#10006;</label>
+          {{ block "modal" . }}
+          <h2>Nittaku NHTTA Cup</h2>
+          <p>The Championship was first held in May 2016. Thanks to Nittaku's sponsorship, players' participation and dedicated volunteers, Championships have been held twice every year since its start. Nittaku and NHTTA wish to continue this tradition.</p>
+
+          Please send any feedback to <a class="no-underline" href="mailto:tournament@nittakuaustralia.com?Subject=Feedback">tournament@nittakuaustralia.com</a>. We love to hear from you.
+          {{ end }}
+        </div>
+      </div>
+    </div>
+    {{ block "script" . }}
+    {{ end }}
+  </body>
+</html>

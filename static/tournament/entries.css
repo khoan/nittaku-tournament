@@ -1,0 +1,7 @@
+.three-striped--light-gray:nth-child(2n) {
+  background-color: #eee;
+}
+
+.three-striped--light-gray:nth-child(4n) {
+  background-color: #bbb;
+}

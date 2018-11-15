@@ -1,0 +1,19 @@
+{{ define "title" }}
+  {{ .Title }}
+{{ end }}
+
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+{{ end }}
+
+{{ define "script" }}
+  {{- $code := split .URL "/" -}}
+  {{- $code := index $code 1 -}}
+  {{- $path := printf "data/%s-sources.json" $code -}}
+  {{- $json := getJSON $path -}}
+  <script type="module">
+    import App from "/tournament/encrypt.es.js";
+    new App({{ $code }}, {{ $json.links | jsonify }});
+  </script>
+{{ end }}

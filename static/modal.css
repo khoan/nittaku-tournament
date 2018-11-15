@@ -1,0 +1,181 @@
+/*
+Pure CSS modal box
+Author: Jorge Chavez
+Github: http://github.com/jorgechavz
+*/
+
+
+.modal .checkbox{
+  display: none;
+}
+
+/* Gray background */
+.modal .modal-overlay{
+  opacity: 0;
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -100;
+  transform: scale(1);
+  display: none;
+  background-color: rgba(0,0,0,0.5);
+}
+
+/* Box */
+.modal .modal-wrap{
+  background: #fdfbfb;
+  border-radius: 0.2em;
+  box-shadow: 5px 5px 5px rgba(0,0,0,0.2);
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+  padding: 40px 65px;
+  width: 60%;
+  margin: 20px auto;
+  align-self: flex-start;
+  transition: all 0.5s ease;
+}
+.modal .modal-wrap.small{
+  width: 30%;
+}
+.modal .modal-wrap.full{
+  width: 100%;
+  height: 100%;
+}
+
+.modal .modal-wrap.a-center {
+  align-self: center;
+}
+.modal .modal-wrap.from-left {
+  transform: translateX(-100%);
+}
+.modal .modal-wrap.from-right {
+  transform: translateX(100%);
+}
+.modal .modal-wrap.from-top {
+  transform: translateY(-100%);
+}
+.modal .modal-wrap.from-bottom {
+  transform: translateY(100%);
+}
+
+
+/* Close button */
+.modal .modal-overlay .close{
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  background: #282c34;
+  border-radius: 50%;
+  justify-content: center;
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  font-size: 15px;
+  width: 30px;
+  height: 30px;
+  color: #d1d1d1;
+}
+
+.modal .modal-overlay .close:hover{
+  cursor: pointer;
+  background-color: #d1d1d1;
+  color: #4b5361;
+  transition: all 0.3s ease;
+}
+
+
+ .modal .o-close {
+   width: 100%;
+   height: 100%;
+   position: fixed;
+   left: 0;
+   top: 0;
+   z-index: -100;
+ }
+
+.modal input:checked ~ .o-close {
+  z-index: 9998;
+}
+.modal input:checked ~ .modal-overlay{
+  transform: scale(1);
+  opacity:1;
+  z-index: 9997;
+  overflow: auto;
+  display: flex;
+  animation-duration: 0.5s;
+  animation-name: fade-in;
+  -moz-animation-duration: 0.5s;
+  -moz-animation-name: fade-in;
+  -webkit-animation-duration: 0.5s;
+  -webkit-animation-name: fade-in;
+}
+.modal input:checked ~ .modal-overlay .modal-wrap {
+  transform: translateY(0);
+  z-index: 9999;
+}
+
+/* Responsive Design */
+/* Tablet size */
+@media (max-width: 800px){
+  .modal .modal-wrap {
+    width: 80%;
+    padding: 20px;
+  }
+}
+
+/* Phone size */
+@media (max-width: 500px){
+  .modal .modal-wrap {
+    width: 90%;
+  }
+}
+
+/* Fadein from display:none */
+@keyframes fade-in {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: flex;
+    opacity: 0;
+  }
+  100% {
+    display: flex;
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fade-in {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: flex;
+    opacity: 0;
+  }
+  100% {
+    display: flex;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fade-in {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: flex;
+    opacity: 0;
+  }
+  100% {
+    display: flex;
+    opacity: 1;
+  }
+}

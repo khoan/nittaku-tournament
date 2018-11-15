@@ -1,0 +1,49 @@
+{{- $yyyymm := .Get 0 | default $.Page.File.BaseFileName -}}
+{{- $path := printf "_data/%s/winners.csv" $yyyymm -}}
+{{- $winners := getCSV "," $path -}}
+<div class="overflow-scroll">
+  <table class="collapse w-100 ba b--black-10">
+    {{- range $i, $winner := $winners -}}
+      {{- $event :=  trim (index $winner 0) "\n\t " -}}
+      {{- $winner =  trim (index $winner 1) "\n\t " -}}
+      {{- $isEven := modBool $i 2 -}}
+      {{- if eq $i 0 -}}
+        <tr class="near-black bg-lightest-blue">
+          <th class="tl pl2 {{ if $isEven }}pv1{{ end }}">Singles</th>
+          <th class="tl pl4">{{ $winner }}</th>
+        </tr>
+      {{- else if in (split $event " ") "Singles" -}}
+        <tr class="striped--light-gray">
+          <td class="tl pl2 nowrap {{ if $isEven }}pv1{{ end }}">{{ replace $event " Singles" "" }}</td>
+          <td class="tl pl4 nowrap {{ if $isEven }}pv1{{ end }}">
+            {{- range (split $winner "\\n") -}}
+              {{ . }}<br>
+            {{- end -}}
+          </td>
+        </tr>
+      {{- end -}}
+    {{- end -}}
+    <tr><td colspan="2">&nbsp;</td></tr>
+    {{- range $i, $winner := $winners -}}
+      {{- $event :=  trim (index $winner 0) "\n\t " -}}
+      {{- $winner =  trim (index $winner 1) "\n\t " -}}
+      {{- $isEven := modBool $i 2 -}}
+      {{- if eq $i 0 -}}
+        <tr class="near-black bg-lightest-blue">
+          <th class="tl pl2 {{ if $isEven }}pv1{{ end }}">Doubles</th>
+          <th class="tl pl4">{{ $winner }}</th>
+        </tr>
+      {{- else if in (split $event " ") "Doubles" -}}
+        <tr class="striped--light-gray">
+          <td class="tl pl2 nowrap {{ if $isEven }}pv1{{ end }}">{{ replace $event " Doubles" "" }}</td>
+          <td class="tl pl4 nowrap {{ if $isEven }}pv1{{ end }}">
+            {{- range (split $winner "\\n") -}}
+              {{ . }}<br>
+            {{- end -}}
+          </td>
+        </tr>
+      {{- end -}}
+    {{- end -}}
+  
+  </table>
+</div>

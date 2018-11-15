@@ -1,0 +1,12 @@
+{{ define "title" }}
+  {{ .Title }}
+{{ end }}
+
+{{ define "style" }}
+  <link rel="stylesheet" type="text/css" href="/tournament.css">
+{{ end }}
+
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+{{ end }}

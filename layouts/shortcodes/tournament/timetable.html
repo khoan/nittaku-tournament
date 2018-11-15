@@ -1,0 +1,59 @@
+{{/*
+render tournament events from _data/yyyymm-events.csv into a table
+*/}}
+
+{{ $yyyymm := .Get 0 }}
+{{ $path := printf "_data/%s-events.csv" $yyyymm }}
+{{ $events := getCSV "," $path }}
+
+{{ $path := printf "data/%s-sources.json" $yyyymm }}
+{{ $sources := getJSON $path }}
+{{ $scores := $sources.scores }}
+
+<div class="overflow-scroll">
+  <table class="collapse w-100 ba b--black-10">
+    <tbody>
+    {{ range $i, $event := $events }}
+      {{ $event_datetime :=  trim (index $event 0) "\n\t " }}
+      {{ $event_name :=  trim (index $event 1) "\n\t " }}
+      {{ $event_scores := index $event 2 }}
+      {{ $date_abbreviation := findRE "Mon|Tue|Wed|Thu|Fri|Sat|Sun" $event_datetime }}
+
+      {{ with $date_abbreviation }}
+        {{ if gt $i 0 }}
+        <tr>
+          <td colspan="3">&nbsp;</td>
+        </tr>
+        {{ end }}
+
+      <tr class="striped--light-gray">
+        <th class="tc pr2 pv1">{{ $event_datetime}}</th>
+        <th class="tl ph3 pv1">{{ $event_name }}</th>
+        <th class="tl">Score</th>
+      </tr>
+      {{ else }}
+      <tr class="striped--light-gray">
+        <td class="tc pr2 pv1 nowrap">{{ $event_datetime }}</td>
+        <td class="tl ph3 pv1 nowrap">{{ $event_name }}</td>
+        <td class="nowrap">
+        {{ $source_url := index $scores $event_name }}
+
+        {{ with $source_url }}
+          {{ if in $event_scores "Groups" }}
+            <a class="link dim mr1 ttc" href="/{{ $yyyymm }}/scores/?event={{ $event_name }}&draw=group">Group</a>
+          {{ end }}
+          {{ if in $event_scores "Knockout" }}
+            <a class="link dim mr1 ttc" href="/{{ $yyyymm }}/scores/?event={{ $event_name }}&draw=knockout">Knockout</a>
+          {{ end }}
+        {{ else }}
+          {{ if not (in $event_name "Presentation") }}
+          not available
+          {{ end }}
+        {{ end }}
+        </td>
+      </tr>
+      {{ end }}
+    {{ end }}
+    </tbody>
+  </table>
+</div>

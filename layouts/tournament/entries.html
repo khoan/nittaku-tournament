@@ -1,0 +1,28 @@
+{{ define "title" }}
+  {{ .Title }}
+{{ end }}
+
+{{ define "style" }}
+  <link rel="stylesheet" type="text/css" href="/tournament/entries.css">
+{{ end }}
+
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+{{ end }}
+
+{{ define "script" }}
+  {{- $code := split .URL "/" -}}
+  {{- $code := index $code 1 -}}
+  {{- $path := printf "data/%s-sources.json" $code -}}
+  {{- $json := getJSON $path -}}
+  <script type="module">
+    import App from "/tournament/entries.js";
+    new App({{ $code }}, "{{ $json.entries | safeHTML }}");
+  </script>
+
+  <script type="module">
+    import App from "/tournament/link.js";
+    new App({{ $json.links | jsonify }}, "entries");
+  </script>
+{{ end }}
