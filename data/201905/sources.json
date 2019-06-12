@@ -1,6 +1,6 @@
 {
-  "entries": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ4EQZ1F0JE36HbX8fsPX5htOtO2z96aCqHf1Er1Y2YIFeVMCPbe7Rmbd37oacQDGEuNvFw7ik5CgV9/pub?gid=0&single=true&output=tsv"
-, "groups": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7sXU2AHupfQ_5PgJmUkArPr6TA3beYGPC9-3cvMlAPRG02vh8pqnNsJC2waBkKV03xEZBRdw8vG4P/pub?gid=0&single=true&output=tsv"
+  "entries": "/201905/entry-list.csv"
+, "groups": "/201905/round-robin-groups.csv"
 , "scores": {
     "Division 1 Singles": ""
   , "Division 2 Singles": ""

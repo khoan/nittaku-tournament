@@ -25,13 +25,12 @@
 {{ end }}
 
 {{ define "script" }}
-  {{- $code := split .URL "/" -}}
-  {{- $code := index $code 1 -}}
-  {{- $path := printf "data/%s-sources.json" $code -}}
+  {{- $yyyymm := index (split .URL "/" ) 1 -}}
+  {{- $path := printf "data/%s/sources.json" $yyyymm -}}
   {{- $json := getJSON $path -}}
   <script type="module">
     import App from "/tournament/scores.js";
-    new App({{ $code }}, {{ $json.scores | jsonify }});
+    new App({{ $yyyymm }}, {{ $json.scores | jsonify }});
   </script>
   <script type="module">
     import App from "/tournament/link.js";

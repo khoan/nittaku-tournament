@@ -2,7 +2,8 @@
  * A silo of entries from google sheet.
  */
 export default class Silo {
-  constructor (url) {
+  constructor (yyyymm, url) {
+    this.id = yyyymm;
     this.url = url;
     this.fetchedAt = undefined;
     this.update();
@@ -24,7 +25,7 @@ export default class Silo {
    * fetch from url when localStorage copy is stale
    */
   fetch (url, ttl) {
-    const silo = 'entry-list';
+    const silo = this.id + '.entry-list';
     const now = Date.now();
     ttl || (ttl = 300000); // 5 minutes
 

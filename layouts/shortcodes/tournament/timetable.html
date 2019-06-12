@@ -1,12 +1,8 @@
-{{/*
-render tournament events from _data/yyyymm-events.csv into a table
-*/}}
-
-{{ $yyyymm := .Get 0 }}
-{{ $path := printf "_data/%s-events.csv" $yyyymm }}
+{{- $yyyymm := .Get 0 | default $.Page.File.BaseFileName -}}
+{{ $path := printf "_data/%s/events.csv" $yyyymm }}
 {{ $events := getCSV "," $path }}
 
-{{ $path := printf "data/%s-sources.json" $yyyymm }}
+{{ $path := printf "data/%s/sources.json" $yyyymm }}
 {{ $sources := getJSON $path }}
 {{ $scores := $sources.scores }}
 
@@ -17,16 +13,16 @@ render tournament events from _data/yyyymm-events.csv into a table
       {{ $event_datetime :=  trim (index $event 0) "\n\t " }}
       {{ $event_name :=  trim (index $event 1) "\n\t " }}
       {{ $event_scores := index $event 2 }}
-      {{ $date_abbreviation := findRE "Mon|Tue|Wed|Thu|Fri|Sat|Sun" $event_datetime }}
+      {{ $header := findRE "Mon|Tue|Wed|Thu|Fri|Sat|Sun" $event_datetime }}
 
-      {{ with $date_abbreviation }}
+      {{ with $header }}
         {{ if gt $i 0 }}
         <tr>
           <td colspan="3">&nbsp;</td>
         </tr>
         {{ end }}
 
-      <tr class="striped--light-gray">
+      <tr class="near-black bg-lightest-blue">
         <th class="tc pr2 pv1">{{ $event_datetime}}</th>
         <th class="tl ph3 pv1">{{ $event_name }}</th>
         <th class="tl">Score</th>

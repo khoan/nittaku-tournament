@@ -1,0 +1,10 @@
+{{- with .Get 0 -}}
+  {{- range (split . " > ") -}}
+    {{- $spec := (split . "::") -}}
+    {{- with (index $spec 1) -}}
+    <a href="{{ . }}" class="link dim">{{ index $spec 0}}</a> <span class="dib w1 h1 v-btm"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg></span>&nbsp;
+    {{- else -}}
+      {{ index $spec 0 }}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

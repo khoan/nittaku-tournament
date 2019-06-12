@@ -1,5 +1,5 @@
-baseURL = "http://tournament.nittakuaustralia.com/"
+baseURL = "https://tournament.nittakuaustralia.com/"
 languageCode = "en-us"
-title = "Nittaku Australia Tournament"
+title = "Nittaku NHTTA Championship"
 
 disableHugoGeneratorInject = true

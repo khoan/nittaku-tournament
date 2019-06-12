@@ -1,5 +1,6 @@
 {{ define "title" }}
-  {{ .Title }}
+  {{- $yyyymm := index (split .URL "/") 1 -}}
+  {{ default (index .Site.Data $yyyymm).meta.title .Title }}
 {{ end }}
 
 {{ define "style" }}
@@ -7,18 +8,18 @@
 {{ end }}
 
 {{ define "main" }}
-  <h1>{{ .Title }}</h1>
+  {{- $yyyymm := index (split .URL "/") 1 -}}
+  <h1>{{ default (index .Site.Data $yyyymm).meta.title .Title }}</h1>
   {{ .Content }}
 {{ end }}
 
 {{ define "script" }}
-  {{- $code := split .URL "/" -}}
-  {{- $code := index $code 1 -}}
-  {{- $path := printf "data/%s-sources.json" $code -}}
+  {{- $yyyymm := index (split .URL "/") 1 -}}
+  {{- $path := printf "data/%s/sources.json" $yyyymm -}}
   {{- $json := getJSON $path -}}
   <script type="module">
     import App from "/tournament/entries.js";
-    new App({{ $code }}, "{{ $json.entries | safeHTML }}");
+    new App({{ $yyyymm }}, "{{ $json.entries | safeHTML }}");
   </script>
 
   <script type="module">

@@ -1,1 +1,12 @@
-{{ with .Get 0 }}{{ $.Page.Param . }}{{ end }}
+{{- with .Get 0 -}}
+  {{- with ($.Page.Param .) -}}
+    {{- . -}}
+  {{- else -}}
+    {{ $yyyymm := substr (index (findRE "^/\\d{6}" $.Page.URL) 0) 1 }}
+    {{- $meta := (index $.Site.Data $yyyymm).meta -}}
+    {{- range (split . ".") -}}
+      {{- $meta = index $meta . -}}
+    {{- end -}}
+    {{- $meta -}}
+  {{- end -}}
+{{- end -}}

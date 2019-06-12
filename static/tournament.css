@@ -1,9 +1,10 @@
-h3 {
+h2 {
   margin-top: 3.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-p {
+table, p {
+  color: hsl(0, 0%, 21.2%);
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
 }

@@ -2,7 +2,8 @@
  * A silo of round robin groups from google sheet.
  */
 export default class {
-  constructor (url) {
+  constructor (yyyymm, url) {
+    this.id = yyyymm;
     this.url = url;
     this.fetchedAt = undefined;
     this.data = Promise.resolve([])
@@ -25,7 +26,7 @@ export default class {
    * fetch from url when localStorage copy is stale
    */
   fetch (url, ttl) {
-    const silo = 'round-robin-groups';
+    const silo = this.id + '.round-robin-groups';
     const now = Date.now();
     ttl || (ttl = 300000); // 5 minutes
 
@@ -75,7 +76,7 @@ export default class {
 
       if (columns.every(c => c.length === 0)) { return }
 
-      if (eventName.match(/\bsingle\b/i)) {
+      if (eventName.match(/\bsingles?\b/i)) {
         eventData = {name: eventName};
         result.push(eventData);
       } else if (!('groups' in eventData)) {

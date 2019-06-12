@@ -11,13 +11,14 @@ export default class {
     if (!data || data.data.length === 0) {
       this.result.update(false);
     } else {
-      //data.data = data.data.sort(function (a, b) {
-      //  var nameA = a[0].toUpperCase();
-      //  var nameB = b[0].toUpperCase();
-      //  if (nameA < nameB) { return -1; }
-      //  if (nameA > nameB) { return 1; }
-      //  return 0;
-      //});
+      //console.log('data', data.data);
+      data.data = data.data.sort(function (a, b) {
+        var ratingA = parseInt(a[2] || 0);
+        var ratingB = parseInt(b[2] || 0);
+        if (ratingA < ratingB) { return 1; }
+        if (ratingA > ratingB) { return -1; }
+        return 0;
+      });
       this.result.update(true, data);
     }
 
@@ -65,6 +66,7 @@ class Header {
       var header = data.top[i].trim();
 
       if (header) {
+        header = header.replace(/\bDouble\b/, 'Doubles');
         row.push({text: header, node: 'th'});
         this.columnIndex[header] = i;
       }
@@ -83,21 +85,23 @@ class Header {
       var header = data.data[i].trim();
       var column = {class: 'nowrap i'};
 
+      //console.log('header', header);
+
       if (header.startsWith('Player Name')) {
         column.html = header.replace(' (', '<br>(');
-      } else if (header.startsWith('Rating Central')) {
+      } else if (header.startsWith('Ratings Central')) {
         column.html = header.replace(' ID', '<br>ID')
-      } else if (header.startsWith('Rating (')) {
-        column.html = header.replace('as of ', 'as of<br>');
+      } else if (header.startsWith('Rating ')) {
+        column.html = header.replace('on', '<br>on').replace('as of ', 'as of<br>');
       } else {
         column.text = header;
       }
 
-      if (header === 'Div. 1') {
+      if (i !== 0 && Object.values(this.columnIndex).includes(i)) {
         column.class += ' pl5';
-      } else if (this.columnIndex['Double Partner'] <= i) {
+      } else if (this.columnIndex['Doubles Partner'] < i) {
         column.class += ' pl3';
-      } else if (this.columnIndex['Singles'] <= i || 0 < i) {
+      } else if (this.columnIndex['Singles'] < i || 0 < i) {
         column.class += ' pl2';
       }
 
@@ -128,7 +132,7 @@ class Body {
 
       for (var i=0; i < entry.length; ++i) {
         var text = entry[i].trim();
-        if (text === 'TRUE') {
+        if (text === 'TRUE' || text === 'on') {
           text = '✓';
         } else if (text === 'FALSE') {
           text = '';
@@ -150,15 +154,15 @@ class Body {
           column.class = 'nowrap';
         } else if (0 < i && i < this.thead.columnIndex['Singles']) {
           column.class = `tc ${headers[i].el.className.match(/pl\d/)[0]}`;
-        } else if (i < this.thead.columnIndex['Double Partner']) {
+        } else if (i < this.thead.columnIndex['Doubles Partner']) {
           column.class = `tc ${headers[i].el.className.match(/pl\d/)[0]}`;
           if (column.text) {
-            column.title = `${headers[i].el.textContent} Single`;
+            column.title = `${headers[i].el.textContent} Singles`;
           }
         } else {
           column.class = `nowrap ${headers[i].el.className.match(/pl\d/)[0]}`;
           if (column.text) {
-            column.title = `${headers[i].el.textContent} Double Partner`;
+            column.title = `${headers[i].el.textContent} Doubles Partner`;
           }
         }
 

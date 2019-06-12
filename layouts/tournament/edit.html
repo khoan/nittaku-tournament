@@ -8,24 +8,12 @@
 {{ end }}
 
 {{ define "script" }}
-  {{- $code := split .URL "/" -}}
-  {{- $code := index $code 1 -}}
-  {{- $path := printf "data/%s-sources.json" $code -}}
+  {{- $yyyymm := index (split .URL "/") 1 -}}
+  {{- $path := printf "data/%s/sources.json" $yyyymm -}}
   {{- $json := getJSON $path -}}
   <script type="module">
     import App from "/tournament/scores/edit.es.js";
     let source = {{ $json.edit_scores | jsonify }};
-
-    {{/* FIXME switch to fileExists when hugo is updated */}}
-    {{ if where (readDir "data/") "Name" (printf "%s-score-links.json" $code) }}
-    let pass = location.search.match(/pass=([^;&]+)/);
-    if (pass && pass[1]) {
-      // generate encrypted package from ?pass= query string
-      source.data = {{ printf "data/%s-score-links.json" $code | getJSON | jsonify }}
-      source.pass = pass[1];
-    }
-    {{ end }}
-
-    new App({{ $code }}, source);
+    new App({{ $yyyymm }}, source);
   </script>
 {{ end }}

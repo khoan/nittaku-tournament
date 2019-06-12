@@ -1,0 +1,25 @@
+{
+  "title": "Nittaku NHTTA Championship of October 2019",
+  "email": "tournament@nittakuaustralia.com",
+  "entry": {
+    "start-date": "24 August 2019",
+    "stop-date": "24 October 2019",
+    "resource-url": "https://script.google.com/macros/s/AKfycbwsIk56SFj10izi4f09gu7M5CkZkD2-M_OG2Z-C9g9cnSLArsLu/exec",
+    "events": {
+      "singles": [
+        {"name": "Open", "maxRating": 5000, "cost": 20},
+        {"name": "Division 1", "maxRating": 1600, "cost": 20},
+        {"name": "Division 2", "maxRating": 1300, "cost": 20},
+        {"name": "Division 3", "maxRating": 1100, "cost": 20},
+        {"name": "Division 4", "maxRating": 800, "cost": 15},
+        {"name": "Division 5", "maxRating": 600, "cost": 15}
+      ],
+      "doubles": [
+        {"name": "Open", "maxRating": 5000, "cost": 10},
+        {"name": "Division 1 & 2", "maxRating": 1600, "cost": 10},
+        {"name": "Division 3", "maxRating": 1100, "cost": 10},
+        {"name": "Division 4 & 5", "maxRating": 800, "cost": 7.5}
+      ]
+    }
+  }
+}

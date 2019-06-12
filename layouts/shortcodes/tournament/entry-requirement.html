@@ -1,0 +1,71 @@
+{{- $events := (index $.Site.Data $.Page.File.BaseFileName).meta.entry.events -}}
+{{- $yyyymm := default $.Page.File.BaseFileName (.Get 0) -}}
+{{- $path := printf "_data/%s/entry-requirement.csv" $yyyymm -}}
+{{- $requirements := getCSV "," $path -}}
+<div id="entry-requirement" class="overflow-scroll mv3">
+  <table class="collapse w-100 ba b--black-10">
+    {{- range $i, $requirement := $requirements -}}
+      {{- $eventName :=  trim (index $requirement 0) "\n\t " -}}
+      {{- $rating :=  trim (index $requirement 1) "\n\t " -}}
+      {{- $level := trim (index $requirement 2) "\n\t " -}}
+      {{- $fee := trim (index $requirement 3) "\n\t " -}}
+      {{- if eq $i 0 -}}
+        <tr class="near-black bg-lightest-blue">
+          <th class="tl pl2 pv1">Singles</th>
+          <th class="pl3 pv1">{{ $rating }}</th>
+          <th class="tl pl3 pv1">{{ $level }}</th>
+          <th class="tr ph3 nowrap">{{ $fee }}</th>
+        </tr>
+      {{- else if in (split $eventName " ") "Singles" -}}
+        {{- $event := "singles" -}}
+        {{- range where (index $events $event) "name" "in" $eventName -}}
+          {{- $event = . -}}
+        {{- end -}}
+        <tr class="striped--light-gray">
+          <td class="pl2 pv1">{{ replace $eventName " Singles" "" }}</td>
+          <td class="pl3 pv1 tc">
+            {{- with $rating -}}
+              {{ . }}
+            {{- else -}} 
+              {{ index $event "maxRating" }}
+            {{- end -}}
+          </td>
+          <td class="pl3 pv1">{{ $level }}</td>
+          <td class="ph4 tr code">${{ index $event "cost" }}</td>
+        </tr>
+      {{- end -}}
+    {{- end -}}
+    <tr><td colspan="4">&nbsp;</td></tr>
+    {{- range $i, $requirement := $requirements -}}
+      {{- $eventName :=  trim (index $requirement 0) "\n\t " -}}
+      {{- $rating :=  trim (index $requirement 1) "\n\t " -}}
+      {{- $level := trim (index $requirement 2) "\n\t " -}}
+      {{- $fee := trim (index $requirement 3) "\n\t " -}}
+      {{- if eq $i 0 -}}
+        <tr class="near-black bg-lightest-blue">
+          <th class="tl pl2 pv1">Doubles</th>
+          <th class="pl3 pv1">{{ $rating }}</th>
+          <th class="tl pl3 pv1">{{ $level }}</th>
+          <th class="tr ph3 nowrap">{{ $fee }}</th>
+        </tr>
+      {{- else if in (split $eventName " ") "Doubles" -}}
+        {{- $event := "doubles" -}}
+        {{- range where (index $events $event) "name" "in" $eventName -}}
+          {{- $event = . -}}
+        {{- end -}}
+        <tr class="striped--light-gray">
+          <td class="pl2 pv1">{{ replace $eventName " Doubles" "" }}</td>
+          <td class="pl3 pv1 tc">
+            {{- with $rating -}}
+              {{ . }}
+            {{- else -}} 
+              {{ index $event "maxRating" }}
+            {{- end -}}
+          </td>
+          <td class="pl3 pv1">{{ $level }}</td>
+          <td class="ph4 tr code">${{ index $event "cost" }}</td>
+        </tr>
+      {{- end -}}
+    {{- end -}}
+  </table>
+</div>

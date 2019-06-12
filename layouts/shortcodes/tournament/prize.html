@@ -1,16 +1,20 @@
 {{- $yyyymm := .Get 0 | default $.Page.File.BaseFileName -}}
-{{- $path := printf "_data/%s/winners.csv" $yyyymm -}}
-{{- $winners := getCSV "," $path -}}
+{{- $path := printf "_data/%s/prizes.csv" $yyyymm -}}
+{{- $prizes := getCSV "," $path -}}
 <div class="overflow-scroll">
   <table class="collapse w-100 ba b--black-10">
-    {{- range $i, $winner := $winners -}}
-      {{- $event :=  trim (index $winner 0) "\n\t " -}}
-      {{- $winner =  trim (index $winner 1) "\n\t " -}}
+    {{- range $i, $prize := $prizes -}}
+      {{- $event :=  trim (index $prize 0) "\n\t " -}}
+      {{- $winner :=  trim (index $prize 1) "\n\t " -}}
+      {{- $finalist := trim (index $prize 2) "\n\t " -}}
+      {{- $semi := trim (index $prize 3) "\n\t " -}}
       {{- $isEven := modBool $i 2 -}}
       {{- if eq $i 0 -}}
         <tr class="near-black bg-lightest-blue">
           <th class="tl pl2 {{ if $isEven }}pv1{{ end }}">Singles</th>
           <th class="tl pl4">{{ $winner }}</th>
+          <th class="tl pl4">{{ $finalist }}</th>
+          <th class="tl pl4">{{ $semi }}</th>
         </tr>
       {{- else if in (split $event " ") "Singles" -}}
         <tr class="striped--light-gray">
@@ -20,18 +24,28 @@
               {{ . }}<br>
             {{- end -}}
           </td>
+          <td class="tl pl4 nowrap {{ if $isEven }}pv1{{ end }}">
+            {{- range (split $finalist "\\n") -}}
+              {{ . }}<br>
+            {{- end -}}
+          </td>
+          <td class="tl pl4 nowrap">{{ default "-" $semi }}</td>
         </tr>
       {{- end -}}
     {{- end -}}
-    <tr><td colspan="2">&nbsp;</td></tr>
-    {{- range $i, $winner := $winners -}}
-      {{- $event :=  trim (index $winner 0) "\n\t " -}}
-      {{- $winner =  trim (index $winner 1) "\n\t " -}}
+    <tr><td colspan="4">&nbsp;</td></tr>
+    {{- range $i, $prize := $prizes -}}
+      {{- $event :=  trim (index $prize 0) "\n\t " -}}
+      {{- $winner :=  trim (index $prize 1) "\n\t " -}}
+      {{- $finalist := trim (index $prize 2) "\n\t " -}}
+      {{- $semi := trim (index $prize 3) "\n\t " -}}
       {{- $isEven := modBool $i 2 -}}
       {{- if eq $i 0 -}}
         <tr class="near-black bg-lightest-blue">
           <th class="tl pl2 {{ if $isEven }}pv1{{ end }}">Doubles</th>
-          <th class="tl pl4">Players</th>
+          <th class="tl pl4">{{ $winner }}</th>
+          <th class="tl pl4">{{ $finalist }}</th>
+          <th class="tl pl4"></th>
         </tr>
       {{- else if in (split $event " ") "Doubles" -}}
         <tr class="striped--light-gray">
@@ -41,6 +55,12 @@
               {{ . }}<br>
             {{- end -}}
           </td>
+          <td class="tl pl4 nowrap {{ if $isEven }}pv1{{ end }}">
+            {{- range (split $finalist "\\n") -}}
+              {{ . }}<br>
+            {{- end -}}
+          </td>
+          <td class="tl pl4 nowrap">{{ default " " $semi }}</td>
         </tr>
       {{- end -}}
     {{- end -}}

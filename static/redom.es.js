@@ -1,54 +1,37 @@
-var HASH = '#'.charCodeAt(0);
-var DOT = '.'.charCodeAt(0);
-
-var TAG_NAME = 0;
-var ID = 1;
-var CLASS_NAME = 2;
-
-var parseQuery = function (query) {
-  var tag = null;
-  var id = null;
-  var className = null;
-  var mode = TAG_NAME;
-  var offset = 0;
-
-  for (var i = 0; i <= query.length; i++) {
-    var char = query.charCodeAt(i);
-    var isHash = char === HASH;
-    var isDot = char === DOT;
-    var isEnd = !char;
-
-    if (isHash || isDot || isEnd) {
-      if (mode === TAG_NAME) {
-        if (i === 0) {
-          tag = 'div';
-        } else {
-          tag = query.substring(offset, i);
-        }
-      } else if (mode === ID) {
-        id = query.substring(offset, i);
-      } else {
-        if (className) {
-          className += ' ' + query.substring(offset, i);
-        } else {
-          className = query.substring(offset, i);
-        }
+function parseQuery (query) {
+  var isId = false;
+  var isClass = false;
+  var tag = '';
+  var id = '';
+  var className = '';
+  for (var i = 0; i < query.length; i++) {
+    var char = query[i];
+    if (char === '.') {
+      isClass = true;
+      isId = false;
+      if (className.length > 0) {
+        className += ' ';
       }
-
-      if (isHash) {
-        mode = ID;
-      } else if (isDot) {
-        mode = CLASS_NAME;
-      }
-
-      offset = i + 1;
+    } else if (char === '#') {
+      isId = true;
+      isClass = false;
+    } else if (isId) {
+      id += char;
+    } else if (isClass) {
+      className += char;
+    } else {
+      tag += char;
     }
   }
 
-  return { tag: tag, id: id, className: className };
-};
+  return {
+    tag: tag || 'div',
+    id: id,
+    className: className
+  };
+}
 
-var createElement = function (query, ns) {
+function createElement (query, ns) {
   var ref = parseQuery(query);
   var tag = ref.tag;
   var id = ref.id;
@@ -68,9 +51,9 @@ var createElement = function (query, ns) {
   }
 
   return element;
-};
+}
 
-var unmount = function (parent, child) {
+function unmount (parent, child) {
   var parentEl = getEl(parent);
   var childEl = getEl(child);
 
@@ -86,13 +69,13 @@ var unmount = function (parent, child) {
   }
 
   return child;
-};
+}
 
-var doUnmount = function (child, childEl, parentEl) {
+function doUnmount (child, childEl, parentEl) {
   var hooks = childEl.__redom_lifecycle;
 
   if (hooksAreEmpty(hooks)) {
-    childEl.__redom_mounted = false;
+    childEl.__redom_lifecycle = {};
     return;
   }
 
@@ -117,9 +100,9 @@ var doUnmount = function (child, childEl, parentEl) {
 
     traverse = traverse.parentNode;
   }
-};
+}
 
-var hooksAreEmpty = function (hooks) {
+function hooksAreEmpty (hooks) {
   if (hooks == null) {
     return true;
   }
@@ -129,12 +112,12 @@ var hooksAreEmpty = function (hooks) {
     }
   }
   return true;
-};
+}
 
 var hookNames = ['onmount', 'onremount', 'onunmount'];
 var shadowRootAvailable = typeof window !== 'undefined' && 'ShadowRoot' in window;
 
-var mount = function (parent, child, before, replace) {
+function mount (parent, child, before, replace) {
   var parentEl = getEl(parent);
   var childEl = getEl(child);
 
@@ -167,65 +150,9 @@ var mount = function (parent, child, before, replace) {
   doMount(child, childEl, parentEl, oldParent);
 
   return child;
-};
+}
 
-var doMount = function (child, childEl, parentEl, oldParent) {
-  var hooks = childEl.__redom_lifecycle || (childEl.__redom_lifecycle = {});
-  var remount = (parentEl === oldParent);
-  var hooksFound = false;
-
-  for (var i = 0, list = hookNames; i < list.length; i += 1) {
-    var hookName = list[i];
-
-    if (!remount) { // if already mounted, skip this phase
-      if (child !== childEl) { // only Views can have lifecycle events
-        if (hookName in child) {
-          hooks[hookName] = (hooks[hookName] || 0) + 1;
-        }
-      }
-    }
-    if (hooks[hookName]) {
-      hooksFound = true;
-    }
-  }
-
-  if (!hooksFound) {
-    childEl.__redom_mounted = true;
-    return;
-  }
-
-  var traverse = parentEl;
-  var triggered = false;
-
-  if (remount || (traverse && traverse.__redom_mounted)) {
-    trigger(childEl, remount ? 'onremount' : 'onmount');
-    triggered = true;
-  }
-
-  while (traverse) {
-    var parent = traverse.parentNode;
-    var parentHooks = traverse.__redom_lifecycle || (traverse.__redom_lifecycle = {});
-
-    for (var hook in hooks) {
-      parentHooks[hook] = (parentHooks[hook] || 0) + hooks[hook];
-    }
-
-    if (triggered) {
-      break;
-    } else {
-      if (traverse === document ||
-        (shadowRootAvailable && (traverse instanceof window.ShadowRoot)) ||
-        (parent && parent.__redom_mounted)
-      ) {
-        trigger(traverse, remount ? 'onremount' : 'onmount');
-        triggered = true;
-      }
-      traverse = parent;
-    }
-  }
-};
-
-var trigger = function (el, eventName) {
+function trigger (el, eventName) {
   if (eventName === 'onmount' || eventName === 'onremount') {
     el.__redom_mounted = true;
   } else if (eventName === 'onunmount') {
@@ -260,70 +187,163 @@ var trigger = function (el, eventName) {
       traverse = next;
     }
   }
-};
+}
 
-var setStyle = function (view, arg1, arg2) {
-  var el = getEl(view);
+function doMount (child, childEl, parentEl, oldParent) {
+  var hooks = childEl.__redom_lifecycle || (childEl.__redom_lifecycle = {});
+  var remount = (parentEl === oldParent);
+  var hooksFound = false;
 
-  if (arg2 !== undefined) {
-    el.style[arg1] = arg2;
-  } else if (typeof arg1 === 'string') {
-    el.setAttribute('style', arg1);
-  } else {
-    for (var key in arg1) {
-      setStyle(el, key, arg1[key]);
+  for (var i = 0, list = hookNames; i < list.length; i += 1) {
+    var hookName = list[i];
+
+    if (!remount) { // if already mounted, skip this phase
+      if (child !== childEl) { // only Views can have lifecycle events
+        if (hookName in child) {
+          hooks[hookName] = (hooks[hookName] || 0) + 1;
+        }
+      }
+    }
+    if (hooks[hookName]) {
+      hooksFound = true;
     }
   }
-};
+
+  if (!hooksFound) {
+    childEl.__redom_lifecycle = {};
+    return;
+  }
+
+  var traverse = parentEl;
+  var triggered = false;
+
+  if (remount || (traverse && traverse.__redom_mounted)) {
+    trigger(childEl, remount ? 'onremount' : 'onmount');
+    triggered = true;
+  }
+
+  while (traverse) {
+    var parent = traverse.parentNode;
+    var parentHooks = traverse.__redom_lifecycle || (traverse.__redom_lifecycle = {});
+
+    for (var hook in hooks) {
+      parentHooks[hook] = (parentHooks[hook] || 0) + hooks[hook];
+    }
+
+    if (triggered) {
+      break;
+    } else {
+      if (traverse === document ||
+        (shadowRootAvailable && (traverse instanceof window.ShadowRoot)) ||
+        (parent && parent.__redom_mounted)
+      ) {
+        trigger(traverse, remount ? 'onremount' : 'onmount');
+        triggered = true;
+      }
+      traverse = parent;
+    }
+  }
+}
+
+function setStyle (view, arg1, arg2) {
+  var el = getEl(view);
+
+  if (typeof arg1 === 'object') {
+    for (var key in arg1) {
+      setStyleValue(el, key, arg1[key]);
+    }
+  } else {
+    setStyleValue(el, arg1, arg2);
+  }
+}
+
+function setStyleValue (el, key, value) {
+  if (value == null) {
+    el.style[key] = '';
+  } else {
+    el.style[key] = value;
+  }
+}
 
 /* global SVGElement */
 
 var xlinkns = 'http://www.w3.org/1999/xlink';
 
-var setAttr = function (view, arg1, arg2) {
+function setAttr (view, arg1, arg2) {
+  setAttrInternal(view, arg1, arg2);
+}
+
+function setAttrInternal (view, arg1, arg2, initial) {
   var el = getEl(view);
-  var isSVG = el instanceof SVGElement;
 
-  var isFunc = typeof arg2 === 'function';
+  var isObj = typeof arg1 === 'object';
 
-  if (arg2 !== undefined) {
-    if (arg1 === 'style') {
+  if (isObj) {
+    for (var key in arg1) {
+      setAttrInternal(el, key, arg1[key], initial);
+    }
+  } else {
+    var isSVG = el instanceof SVGElement;
+    var isFunc = typeof arg2 === 'function';
+
+    if (arg1 === 'style' && typeof arg2 === 'object') {
       setStyle(el, arg2);
     } else if (isSVG && isFunc) {
       el[arg1] = arg2;
     } else if (arg1 === 'dataset') {
       setData(el, arg2);
-    } else if (!isSVG && (arg1 in el || isFunc)) {
+    } else if (!isSVG && (arg1 in el || isFunc) && (arg1 !== 'list')) {
       el[arg1] = arg2;
     } else {
       if (isSVG && (arg1 === 'xlink')) {
         setXlink(el, arg2);
         return;
       }
-      el.setAttribute(arg1, arg2);
+      if (initial && arg1 === 'class') {
+        arg2 = el.className + ' ' + arg2;
+      }
+      if (arg2 == null) {
+        el.removeAttribute(arg1);
+      } else {
+        el.setAttribute(arg1, arg2);
+      }
+    }
+  }
+}
+
+function setXlink (el, arg1, arg2) {
+  if (typeof arg1 === 'object') {
+    for (var key in arg1) {
+      setXlink(el, key, arg1[key]);
     }
   } else {
-    for (var key in arg1) {
-      setAttr(el, key, arg1[key]);
+    if (arg2 != null) {
+      el.setAttributeNS(xlinkns, arg1, arg2);
+    } else {
+      el.removeAttributeNS(xlinkns, arg1, arg2);
     }
   }
-};
+}
 
-function setXlink (el, obj) {
-  for (var key in obj) {
-    el.setAttributeNS(xlinkns, key, obj[key]);
+function setData (el, arg1, arg2) {
+  if (typeof arg1 === 'object') {
+    for (var key in arg1) {
+      setData(el, key, arg1[key]);
+    }
+  } else {
+    if (arg2 != null) {
+      el.dataset[arg1] = arg2;
+    } else {
+      delete el.dataset[arg1];
+    }
   }
 }
 
-function setData (el, obj) {
-  for (var key in obj) {
-    el.dataset[key] = obj[key];
-  }
+function text (str) {
+  return document.createTextNode((str != null) ? str : '');
 }
 
-var text = function (str) { return document.createTextNode((str != null) ? str : ''); };
-
-var parseArguments = function (element, args) {
+function parseArgumentsInternal (element, args, initial) {
   for (var i = 0, list = args; i < list.length; i += 1) {
     var arg = list[i];
 
@@ -333,7 +353,6 @@ var parseArguments = function (element, args) {
 
     var type = typeof arg;
 
-    // support middleware
     if (type === 'function') {
       arg(element);
     } else if (type === 'string' || type === 'number') {
@@ -341,22 +360,28 @@ var parseArguments = function (element, args) {
     } else if (isNode(getEl(arg))) {
       mount(element, arg);
     } else if (arg.length) {
-      parseArguments(element, arg);
+      parseArgumentsInternal(element, arg, initial);
     } else if (type === 'object') {
-      setAttr(element, arg);
+      setAttrInternal(element, arg, null, initial);
     }
   }
-};
+}
 
-var ensureEl = function (parent) { return typeof parent === 'string' ? html(parent) : getEl(parent); };
-var getEl = function (parent) { return (parent.nodeType && parent) || (!parent.el && parent) || getEl(parent.el); };
-var isNode = function (a) { return a && a.nodeType; };
+function ensureEl (parent) {
+  return typeof parent === 'string' ? html(parent) : getEl(parent);
+}
+
+function getEl (parent) {
+  return (parent.nodeType && parent) || (!parent.el && parent) || getEl(parent.el);
+}
+
+function isNode (arg) {
+  return arg && arg.nodeType;
+}
 
 var htmlCache = {};
 
-var memoizeHTML = function (query) { return htmlCache[query] || (htmlCache[query] = createElement(query)); };
-
-var html = function (query) {
+function html (query) {
   var args = [], len = arguments.length - 1;
   while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
@@ -375,12 +400,15 @@ var html = function (query) {
     throw new Error('At least one argument required');
   }
 
-  parseArguments(getEl(element), args);
+  parseArgumentsInternal(getEl(element), args, true);
 
   return element;
-};
+}
 
-html.extend = function (query) {
+var el = html;
+var h = html;
+
+html.extend = function extendHtml (query) {
   var args = [], len = arguments.length - 1;
   while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
@@ -389,10 +417,11 @@ html.extend = function (query) {
   return html.bind.apply(html, [ this, clone ].concat( args ));
 };
 
-var el = html;
-var h = html;
+function memoizeHTML (query) {
+  return htmlCache[query] || (htmlCache[query] = createElement(query));
+}
 
-var setChildren = function (parent) {
+function setChildren (parent) {
   var children = [], len = arguments.length - 1;
   while ( len-- > 0 ) children[ len ] = arguments[ len + 1 ];
 
@@ -406,7 +435,7 @@ var setChildren = function (parent) {
 
     current = next;
   }
-};
+}
 
 function traverse (parent, children, _current) {
   var current = _current;
@@ -453,11 +482,9 @@ function traverse (parent, children, _current) {
   return current;
 }
 
-var propKey = function (key) { return function (item) { return item[key]; }; };
-
-var listPool = function (View, key, initData) {
+function listPool (View, key, initData) {
   return new ListPool(View, key, initData);
-};
+}
 
 var ListPool = function ListPool (View, key, initData) {
   this.View = View;
@@ -512,9 +539,15 @@ ListPool.prototype.update = function update (data, context) {
   this.lookup = newLookup;
 };
 
-var list = function (parent, View, key, initData) {
+function propKey (key) {
+  return function (item) {
+    return item[key];
+  };
+}
+
+function list (parent, View, key, initData) {
   return new List(parent, View, key, initData);
-};
+}
 
 var List = function List (parent, View, key, initData) {
   this.__redom_list = true;
@@ -564,7 +597,7 @@ List.prototype.update = function update (data, context) {
   this.views = views;
 };
 
-List.extend = function (parent, View, key, initData) {
+List.extend = function extendList (parent, View, key, initData) {
   return List.bind(List, parent, View, key, initData);
 };
 
@@ -572,9 +605,9 @@ list.extend = List.extend;
 
 /* global Node */
 
-var place = function (View, initData) {
+function place (View, initData) {
   return new Place(View, initData);
-};
+}
 
 var Place = function Place (View, initData) {
   this.el = text('');
@@ -584,6 +617,9 @@ var Place = function Place (View, initData) {
 
   if (View instanceof Node) {
     this._el = View;
+  } else if (View.el instanceof Node) {
+    this._el = View;
+    this.view = View;
   } else {
     this._View = View;
   }
@@ -600,19 +636,18 @@ Place.prototype.update = function update (visible, data) {
         mount(parentNode, this._el, placeholder);
         unmount(parentNode, placeholder);
 
-        this.el = this._el;
+        this.el = getEl(this._el);
         this.visible = visible;
+      } else {
+        var View = this._View;
+        var view = new View(this._initData);
 
-        return;
+        this.el = getEl(view);
+        this.view = view;
+
+        mount(parentNode, view, placeholder);
+        unmount(parentNode, placeholder);
       }
-      var View = this._View;
-      var view = new View(this._initData);
-
-      this.el = getEl(view);
-      this.view = view;
-
-      mount(parentNode, view, placeholder);
-      unmount(parentNode, placeholder);
     }
     this.view && this.view.update && this.view.update(data);
   } else {
@@ -636,9 +671,11 @@ Place.prototype.update = function update (visible, data) {
   this.visible = visible;
 };
 
-var router = function (parent, Views, initData) {
+/* global Node */
+
+function router (parent, Views, initData) {
   return new Router(parent, Views, initData);
-};
+}
 
 var Router = function Router (parent, Views, initData) {
   this.el = ensureEl(parent);
@@ -651,7 +688,12 @@ Router.prototype.update = function update (route, data) {
     var View = Views[route];
 
     this.route = route;
-    this.view = View && new View(this.initData, data);
+
+    if (View && (View instanceof Node || View.el instanceof Node)) {
+      this.view = View;
+    } else {
+      this.view = View && new View(this.initData, data);
+    }
 
     setChildren(this.el, [ this.view ]);
   }
@@ -662,9 +704,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 var svgCache = {};
 
-var memoizeSVG = function (query) { return svgCache[query] || (svgCache[query] = createElement(query, ns)); };
-
-var svg = function (query) {
+function svg (query) {
   var args = [], len = arguments.length - 1;
   while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
@@ -683,12 +723,14 @@ var svg = function (query) {
     throw new Error('At least one argument required');
   }
 
-  parseArguments(getEl(element), args);
+  parseArgumentsInternal(getEl(element), args, true);
 
   return element;
-};
+}
 
-svg.extend = function (query) {
+var s = svg;
+
+svg.extend = function extendSvg (query) {
   var clone = memoizeSVG(query);
 
   return svg.bind(this, clone);
@@ -696,6 +738,8 @@ svg.extend = function (query) {
 
 svg.ns = ns;
 
-var s = svg;
+function memoizeSVG (query) {
+  return svgCache[query] || (svgCache[query] = createElement(query, ns));
+}
 
-export { el, h, html, list, List, listPool, ListPool, mount, unmount, place, Place, router, Router, setAttr, setStyle, setChildren, s, svg, text };
+export { List, ListPool, Place, Router, el, h, html, list, listPool, mount, place, router, s, setAttr, setChildren, setData, setStyle, setXlink, svg, text, unmount };
