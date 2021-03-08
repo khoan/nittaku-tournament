@@ -1,0 +1,28 @@
+{
+  "title": "Nittaku NHTTA Championship of May 2021",
+  "email": "tournament@nittakuaustralia.com",
+  "phone": {
+    "display": "0430 248 670",
+    "value": "+61430248670"
+  },
+  "entry": {
+    "start-date": "6 April 2021",
+    "stop-date": "6 May 2021",
+    "events": {
+      "singles": [
+        {"name": "Division 1", "maxRating": 5000, "cost": 25},
+        {"name": "Division 2", "maxRating": 1600, "cost": 25},
+        {"name": "Division 3", "maxRating": 1300, "cost": 25},
+        {"name": "Division 4", "maxRating": 1100, "cost": 25},
+        {"name": "Division 5", "maxRating": 800, "cost": 20},
+        {"name": "Junior", "maxRating": 600, "cost": 20}
+      ],
+      "doubles": [
+        {"name": "Division 1", "maxRating": 5000, "cost": 15},
+        {"name": "Division 2 & 3", "maxRating": 1600, "cost": 15},
+        {"name": "Division 4", "maxRating": 1100, "cost": 15},
+        {"name": "Division 5 & Junior", "maxRating": 800, "cost": 10}
+      ]
+    }
+  }
+}
