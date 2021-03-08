@@ -28,7 +28,11 @@ export default class {
   }
 
   count () {
-    return this.result.view && this.result.view.tbody.body.views.length;
+    if (this.result.view) {
+      return this.result.view.tbody.body.views.length;
+    } else {
+      return 0;
+    }
   }
 }
 

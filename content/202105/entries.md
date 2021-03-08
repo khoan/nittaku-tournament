@@ -3,7 +3,7 @@ type: tournament
 layout: entries
 ---
 
-{{< crumb "Tournaments::/ > Oct. 2019::/201910 > Entries::" >}} <span class="js-link dib w1 h1 v-btm"></span>
+{{< crumb "Tournaments::/ > May 2021::/202105 > Entries::" >}} <span class="js-link dib w1 h1 v-btm"></span>
 
 <div id="js-app" class="mv5"></div>
 

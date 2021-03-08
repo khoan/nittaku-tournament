@@ -18,7 +18,6 @@ export default class EntrySearch {
 
     this.el.onsubmit = e => {
       e.preventDefault();
-      console.log('submit');
       this.search.click();
     }
 
