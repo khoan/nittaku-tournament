@@ -40,7 +40,7 @@ class Event {
       this.nogroups.update(false);
       this.groups.update(true, groups);
     } else {
-      this.nogroups.update(true, 'No groups');
+      this.nogroups.update(true, 'Groups are NOT yet drawn');
       this.groups.update(false);
     }
   }

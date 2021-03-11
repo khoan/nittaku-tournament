@@ -10,18 +10,18 @@
     "stop-date": "6 May 2021",
     "events": {
       "singles": [
-        {"name": "Division 1", "maxRating": 5000, "cost": 25},
-        {"name": "Division 2", "maxRating": 1600, "cost": 25},
-        {"name": "Division 3", "maxRating": 1300, "cost": 25},
-        {"name": "Division 4", "maxRating": 1100, "cost": 25},
-        {"name": "Division 5", "maxRating": 800, "cost": 20},
-        {"name": "Junior", "maxRating": 600, "cost": 20}
+        {"name": "Open", "maxRating": 5000, "cost": 25},
+        {"name": "Division 1", "maxRating": 1650, "cost": 25},
+        {"name": "Division 2", "maxRating": 1500, "cost": 25},
+        {"name": "Division 3", "maxRating": 1350, "cost": 25},
+        {"name": "Division 4", "maxRating": 1150, "cost": 20},
+        {"name": "Division 5", "maxRating": 950, "cost": 20}
       ],
       "doubles": [
-        {"name": "Division 1", "maxRating": 5000, "cost": 15},
-        {"name": "Division 2 & 3", "maxRating": 1600, "cost": 15},
-        {"name": "Division 4", "maxRating": 1100, "cost": 15},
-        {"name": "Division 5 & Junior", "maxRating": 800, "cost": 10}
+        {"name": "Open", "maxRating": 5000, "cost": 15},
+        {"name": "Division 1 & 2", "maxRating": 1650, "cost": 15},
+        {"name": "Division 3", "maxRating": 1350, "cost": 15},
+        {"name": "Division 4 & 5", "maxRating": 1150, "cost": 10}
       ]
     }
   }

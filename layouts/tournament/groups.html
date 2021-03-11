@@ -1,9 +1,11 @@
 {{ define "title" }}
-  {{ .Title }}
+  {{- $yyyymm := index (split .URL "/") 1 -}}
+  {{ default (index .Site.Data $yyyymm).meta.title .Title }}
 {{ end }}
 
 {{ define "main" }}
-  <h1>{{ .Title }}</h1>
+  {{- $yyyymm := index (split .URL "/") 1 -}}
+  <h1>{{ default (index .Site.Data $yyyymm).meta.title .Title }}</h1>
   {{ .Content }}
 {{ end }}
 

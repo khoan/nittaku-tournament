@@ -7,4 +7,4 @@ layout: entries
 
 <div id="js-app" class="mv5"></div>
 
-Please email <a class="link dim" href="mailto:{{< meta "email" >}}?Subject=October+2019">{{< meta "email" >}}</a> to rectify any errors by *{{< meta "entry.stop-date" >}}*.
+Please email <a class="link dim" href="mailto:{{< meta "email" >}}?Subject=May+2021">{{< meta "email" >}}</a> to rectify any errors by *{{< meta "entry.stop-date" >}}*.
