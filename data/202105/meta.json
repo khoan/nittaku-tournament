@@ -6,8 +6,9 @@
     "value": "+61430248670"
   },
   "entry": {
-    "start-date": "6 April 2021",
+    "start-date": "15 March 2021",
     "stop-date": "6 May 2021",
+    "resource-url": "https://script.google.com/macros/s/AKfycbwsIk56SFj10izi4f09gu7M5CkZkD2-M_OG2Z-C9g9cnSLArsLu/exec",
     "events": {
       "singles": [
         {"name": "Open", "maxRating": 5000, "cost": 25},

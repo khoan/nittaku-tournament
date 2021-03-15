@@ -860,12 +860,12 @@ class PartnerNameInput {
       setStyle(this.label, {color: ''});
       setStyle(this.input, {color: ''});
       this.input.classList.add('b--black-20');
-      this.input.classList.remove('bg-transparent');
+      this.input.classList.remove('bg-transparent', 'b--transparent');
       setAttr(this.input, {'disabled': '', placeholder: 'Last name, First name'});
     } else {
       setStyle(this.label, {color: 'transparent'});
       setStyle(this.input, {color: 'transparent'});
-      this.input.classList.add('bg-transparent');
+      this.input.classList.add('bg-transparent', 'b--transparent');
       this.input.classList.remove('b--black-20');
       setAttr(this.input, {'disabled': 'disabled', placeholder: ''});
     }
