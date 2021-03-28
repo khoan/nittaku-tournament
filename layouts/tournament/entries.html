@@ -19,7 +19,7 @@
   {{- $json := getJSON $path -}}
   <script type="module">
     import App from "/tournament/entries.js";
-    new App({{ $yyyymm }}, "{{ $json.entries | safeHTML }}");
+    new App({{ $yyyymm }}, "{{ $json.entries | safeHTML }}", "{{ getenv "ENTRY_LIST_UPDATED_AT" }}");
   </script>
 
   <script type="module">
