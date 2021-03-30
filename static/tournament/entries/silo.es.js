@@ -50,6 +50,9 @@ export default class Silo {
    * parse tsv
    *
    * {
+   *   meta: {
+   *     updated_at: "30 March 2021, 9:34:12 pm"
+   *   },
    *   headers: {
    *     top: ["Entries", "", "", "Singles", "", "", "", "", "", "Double Partner", "", "", "", "", "", ""],
    *     data: ["Player Name (Surname, Forename)", "Rating Central ID", "Rating (as of 10 May 2019)", "Div. 1", "Div. 2", "Div. 3", "Div. 4", "Div. 5", "Junior", "Div. 1", "Div. 2", "Div. 3", "Div. 4", "Div. 5", "Junior"]
@@ -65,9 +68,17 @@ export default class Silo {
    * }
    */
   parse (blob) {
-    var result = {headers: {}, data: []}
+    var result = {
+      meta: {updatedAt: undefined}
+    , headers: {}
+    , data: []
+    };
 
-    blob.split('\n').forEach(function (row) {
+    var rows = blob.split('\n');
+
+    result.meta.updatedAt = rows.shift();
+
+    rows.forEach(function (row) {
       if (! ('top' in result.headers)) {
         result.headers.top = row.split('\t');
       } else if (! ('data' in result.headers)) {

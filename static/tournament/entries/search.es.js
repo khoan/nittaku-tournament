@@ -74,11 +74,21 @@ export default class EntrySearch {
         };
 
         this.entryList.update(filtered);
-        this.summarize(filtered.data.length);
+        this.summarize({
+          entries: {
+            count: filtered.data.length
+          , updatedAt: data.meta.updatedAt
+          }
+        });
       });
     } else {
       this.entryList.update();
-      this.summarize(0);
+      this.summarize({
+        entries: {
+          count: 0
+        , updatedAt: new Date(this.silo.fetchedAt).toLocaleString()
+        }
+      });
     }
   }
 
@@ -88,19 +98,24 @@ export default class EntrySearch {
   onList () {
     this.silo.data.then(data => {
       this.entryList.update(data);
-      this.summarize(this.entryList.count());
+      this.summarize({
+        entries: {
+          count: this.entryList.count()
+        , updatedAt: data.meta.updatedAt
+        }
+      });
     });
   }
 
-  summarize (count) {
+  summarize (info) {
     let summary;
 
-    if (count === 0) {
+    if (info.entries.count === 0) {
       summary = 'No entries found'
     } else {
-      summary = `${count} ${count > 1 ? 'entries' : 'entry'} found`
+      summary = `${info.entries.count} ${info.entries.count > 1 ? 'entries' : 'entry'} found`
     }
 
-    this.summary.textContent = `${summary}, last updated at ${new Date(this.silo.fetchedAt).toLocaleString()}`;
+    this.summary.textContent = `${summary}, last updated at ${info.entries.updatedAt}`;
   }
 }
