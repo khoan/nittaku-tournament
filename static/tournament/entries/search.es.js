@@ -3,10 +3,9 @@ import EntryList from './list.es.js';
 
 // TODO support autosuggest when searching by names or ID
 export default class EntrySearch {
-  constructor (root, silo, lastUpdated) {
+  constructor (root, silo) {
     this.root = root;
     this.silo = silo;
-    this.lastUpdated = lastUpdated || new Date(this.silo.fetchedAt).toLocaleString();
 
     this.el = el('#entry-search',
       this.form = el('form.black-80',
@@ -102,6 +101,6 @@ export default class EntrySearch {
       summary = `${count} ${count > 1 ? 'entries' : 'entry'} found`
     }
 
-    this.summary.textContent = `${summary}, last updated at ${this.lastUpdated}`;
+    this.summary.textContent = `${summary}, last updated at ${new Date(this.silo.fetchedAt).toLocaleString()}`;
   }
 }
