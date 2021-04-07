@@ -665,8 +665,10 @@ class PlayerNameInput {
   }
 
   update (data) {
-    this.input.value = data.name;
-    this.dummyInput.value = data.name;
+    if (data.name) {
+      this.input.value = data.name;
+      this.dummyInput.value = data.name;
+    }
   }
 }
 
