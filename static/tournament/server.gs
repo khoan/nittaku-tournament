@@ -22,12 +22,12 @@
 var META = {
   NOW: undefined // useful to test time related logic
 , tournament: {
-    name: "NHTTA Oct. 2019 Championship"
+    name: "NHTTA May 2021 Championship"
   , email: "tournament@nittakuaustralia.com"
   , entry: {
-      startDate: "1 Sep 2019"
-    , stopDate: "24 Oct 2019"
-    , resourceUrl: "https://tournament.nittakuaustralia.com/201910/entries/"
+      startDate: "14 Mar 2021"
+    , stopDate: "6 May 2021"
+    , resourceUrl: "https://tournament.nittakuaustralia.com/202105/entries/"
     }
   }
 , sheets: {
@@ -38,7 +38,7 @@ var META = {
   , entries: {
       name: "Entries" // entry is updated on this sheet
     , headerRow: 2
-    , idFields: ["Dust", "RatingsCentralID", "PlayerName"]
+    , idFields: ["Dust", "RatingsCentralID"]
     , privateFields: ["Email", "Phone", "DateOfBirth"]
     , publicFields: ["PlayerName", "RatingsCentralID", "Rating"
       , "SinglesOpen", "SinglesDiv1", "SinglesDiv2", "SinglesDiv3", "SinglesDiv4", "SinglesDiv5"
@@ -227,11 +227,11 @@ var App = (function (meta, env, tools) {
     var row = tools.sheet("entries").find(data);
 
     if (row.ok) {
-      if (row.json["PlayerName"] !== data["PlayerName"]) {
-        result.status = "409 Conflict";
-        result.body = {"message": "Player name mismatch."};
-      }
-      if (result.status) { return result; }
+      //if (row.json["PlayerName"] !== data["PlayerName"]) {
+      //  result.status = "409 Conflict";
+      //  result.body = {"message": "Player name mismatch."};
+      //}
+      //if (result.status) { return result; }
       
       data["Action"] || (data["Action"] = data.action || "destroy");
       data["Timestamp"] = now;
@@ -291,7 +291,7 @@ var App = (function (meta, env, tools) {
     var subject = meta.tournament.name + " - Entry confirmation";
     var body = "Hi " + data["PlayerName"].split(",")[1].trim() + ",\n\n"
       + "Thank you for your entry.\n\n"
-      + "To update/withdraw your entry, please visit " + data["EditLink"].replace(" ", "%20") + "\n\n"
+      + "To update/withdraw your entry, please visit " + data["EditLink"].replace(" ", "%20", "g") + "\n\n"
       + "To view your entry, please visit " + meta.tournament.entry.resourceUrl + "\n\n"
       + "Regards,\nSue / Tournament Director";
 

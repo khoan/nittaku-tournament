@@ -8,7 +8,7 @@
   "entry": {
     "start-date": "15 March 2021",
     "stop-date": "6 May 2021",
-    "resource-url": "https://script.google.com/macros/s/AKfycbwsIk56SFj10izi4f09gu7M5CkZkD2-M_OG2Z-C9g9cnSLArsLu/exec",
+    "resource-url": "https://script.google.com/macros/s/AKfycbyGbu8FriciOITRm9f9CXcobXMdO8Zrh1ZNy5xMqP1ZkB3m6ikoLplLlTHx16RQ3Bt8BQ/exec",
     "events": {
       "singles": [
         {"name": "Open", "maxRating": 5000, "cost": 25},
